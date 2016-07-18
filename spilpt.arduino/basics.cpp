@@ -8,8 +8,8 @@
  * README:
  * I attempted to reverse engineer spilpt.dll the best I could.
  * However, compiling it with visual studio 2010 did not allow me to yield an identical DLL, and I don't have VS 2005 (original was compiled with this) installed.
- * For now, I'll leave it at this 
- * Feel free to use this to write your own 
+ * For now, I'll leave it at this
+ * Feel free to use this to write your own
 */
 
 #define VARLIST_SPISPORT 0
@@ -128,7 +128,8 @@ HANDLE __cdecl spifns_open_port(int nPort) {
 	if (hDevice==INVALID_HANDLE_VALUE)
 		return INVALID_HANDLE_VALUE;
 	DCB dcb={0};
-	dcb.BaudRate=CBR_256000;
+	//dcb.BaudRate=CBR_256000;
+	dcb.BaudRate=CBR_115200;
 	dcb.DCBlength=sizeof(dcb);
 	dcb.fBinary=FALSE;
 	dcb.fParity=FALSE;
@@ -254,7 +255,7 @@ bool __cdecl spifns_sequence_setvar_spiport(int nPort) {
 	g_nSpiShiftPeriod=1;
 	return true;
 }
-//RE Check: Functionally equivalent, but completely different ASM code 
+//RE Check: Functionally equivalent, but completely different ASM code
 void __cdecl spifns_debugout_readwrite(unsigned short nAddress, char cOperation, unsigned short nLength, unsigned short *pnData) {
 	if (g_pDebugCallback) {
 		static const char * const pszTable[]={
