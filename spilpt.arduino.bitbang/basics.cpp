@@ -24,6 +24,13 @@ const SPIVARDEF g_pVarList[]={
 	{"SPIMAXCLOCK","1000",0}
 };
 
+
+#ifdef __GNUC__
+#define DLLEXPORT /* Empty */
+#else
+#define DLLEXPORT __declspec(dllexport)
+#endif
+
 unsigned int g_nSpiMulChipNum=-1;
 int g_nSpiPort=1;
 unsigned char g_bCurrentOutput=0x10;
@@ -112,7 +119,9 @@ HANDLE __cdecl spifns_open_port(int nPort) {
 	OSVERSIONINFOA ovi;
 	char szFilename[20];
 	const unsigned char pTestBuffer[]={0xCB};
-
+//    FILE * f = fopen("hola.txt", "a");
+//    fprintf(f, "puerto COM%d\n", nPort);
+//    fclose(f);
 	ovi.dwOSVersionInfoSize=sizeof(ovi);
 	GetVersionExA(&ovi);
 	if (ovi.dwPlatformId!=VER_PLATFORM_WIN32_NT)
@@ -126,7 +135,7 @@ HANDLE __cdecl spifns_open_port(int nPort) {
 		CloseHandle(hDevice);
 		return INVALID_HANDLE_VALUE;
 	}
-	dcb.BaudRate=CBR_256000;
+	dcb.BaudRate=CBR_115200; //CBR_256000;
     dcb.ByteSize=8;
     dcb.StopBits=ONESTOPBIT;
     dcb.Parity=NOPARITY;
@@ -159,7 +168,7 @@ bool ArduinoTransfer(BYTE *pInput, BYTE *pOutput, DWORD nBytes) {
 	}
 	return true;
 }
-bool __cdecl SPITransfer(int nInput, int nBits, int *pnRetval, bool bEndTransmission) {
+bool DLLEXPORT SPITransfer(int nInput, int nBits, int *pnRetval, bool bEndTransmission) {
 	if (pnRetval)
 		*pnRetval=0;
 	if (!g_hDevice) {

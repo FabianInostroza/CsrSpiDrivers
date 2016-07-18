@@ -9,6 +9,10 @@
 #define SPIERR_READ_FAILED 0x103
 #define SPIERR_IOCTL_FAILED 0x104
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct SPIVARDEF {
 	const char *szName;
 	const char *szDefault;
@@ -39,14 +43,17 @@ typedef void (__cdecl *spifns_debug_callback)(const char *szDebug);
 
 int __cdecl spifns_init(); //Return 0 on no error, negative on error
 void __cdecl spifns_close();
-void __cdecl spifns_getvarlist(SPIVARDEF **ppList, unsigned int *pnCount);
+void __cdecl spifns_getvarlist(const SPIVARDEF **ppList, unsigned int *pnCount);
 const char * __cdecl spifns_getvar(const char *szName);
 int __cdecl spifns_get_version(); //Should return 259
 void __cdecl spifns_enumerate_ports(spifns_enumerate_ports_callback pCallback, void *pData);
-void __cdecl spifns_chip_select(unsigned int nUnknown);
+void __cdecl spifns_chip_select(int nChip);
 const char* __cdecl spifns_command(const char *szCmd); //Return 0 on no error, or string on error.
 unsigned int __cdecl spifns_get_last_error(unsigned short *pnErrorAddress, const char **szErrorString); //Returns where the error occured, or 0x100 for none
 int __cdecl spifns_bluecore_xap_stopped(); //Returns -1 on error, 0 on XAP running, 1 on stopped
 int __cdecl spifns_sequence(SPISEQ *pSequence, unsigned int nCount); //Return 0 on no error
 void __cdecl spifns_set_debug_callback(spifns_debug_callback pCallback);
+#ifdef __cplusplus
+}   /* extern "C" */
+#endif
 #endif//SPIFNS_H
